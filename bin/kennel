@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+require 'kennel'
+
+db_path = ENV.fetch('KENNEL_DB', 'kennel.db')
+container = Kennel::Composition::Container.sqlite(path: db_path)
+exit Kennel::Presentation::CLI.new(container: container).run(ARGV)
