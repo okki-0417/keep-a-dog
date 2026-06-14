@@ -26,6 +26,38 @@ module Kennel
         Application::Services::TreatDog.new(dogs: @dogs)
       end
 
+      def feed_dog
+        Application::Services::FeedDog.new(dogs: @dogs)
+      end
+
+      def give_water
+        Application::Services::GiveWater.new(dogs: @dogs)
+      end
+
+      def walk_dog
+        Application::Services::WalkDog.new(dogs: @dogs)
+      end
+
+      def socialize_dog
+        Application::Services::SocializeDog.new(dogs: @dogs)
+      end
+
+      def praise_dog
+        Application::Services::PraiseDog.new(dogs: @dogs)
+      end
+
+      def brush_teeth
+        Application::Services::BrushTeeth.new(dogs: @dogs)
+      end
+
+      def vaccinate_dog
+        Application::Services::VaccinateDog.new(dogs: @dogs)
+      end
+
+      def neuter_dog
+        Application::Services::NeuterDog.new(dogs: @dogs)
+      end
+
       def live_a_day
         Application::Services::LiveADay.new(dogs: @dogs)
       end

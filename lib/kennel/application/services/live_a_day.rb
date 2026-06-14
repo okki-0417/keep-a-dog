@@ -3,16 +3,18 @@
 module Kennel
   module Application
     module Services
-      # 一日の経過を束ねるユースケース。加齢・エネルギー収支・空腹という別々のドメイン知識を、
+      # 一日の経過を束ねるユースケース。加齢・エネルギー収支・空腹・水分という別々のドメイン知識を、
       # 「その日に与えたエネルギー(intake_kcal)」を入力に1日ぶん進める。
       class LiveADay < CommandHandler
         DAILY_APPETITE = 40
+        DAILY_DEHYDRATION = 30
 
         def call(command)
           dog = load!(command.dog_id)
           dog.pass_day(1)
           dog.metabolize(command.intake_kcal)
           dog.get_hungrier(DAILY_APPETITE)
+          dog.lose_water(DAILY_DEHYDRATION)
           @dogs.save(dog)
         end
       end

@@ -44,7 +44,7 @@ module Kennel
       WATER_ML_PER_KG = 55
       DEHYDRATION_THRESHOLD = 70
 
-      attr_reader :id, :breed, :sex, :weight_in_grams, :hunger, :socialization, :trust, :separation_distress
+      attr_reader :id, :breed, :sex, :weight_in_grams, :hunger, :socialization, :trust, :separation_distress, :hydration
 
       def initialize(breed:, age_in_days: 0, weight_in_grams: nil, sex: :male, id: SecureRandom.uuid)
         @id = id
