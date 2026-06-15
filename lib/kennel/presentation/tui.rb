@@ -47,7 +47,7 @@ module Kennel
         loop do
           dog = current_dog
           render(dog)
-          choice = @prompt.select('どうする?', menu_for(dog))
+          choice = choose('どうする?', menu_for(dog))
           break if choice == :quit
 
           act(choice, dog)
@@ -59,8 +59,8 @@ module Kennel
 
       def adopt_flow
         @out.puts 'ようこそ。新しい家族を迎えましょう。'
-        breed_key = @prompt.select('犬種を選ぶ', BREEDS)
-        age = @prompt.select('迎えるときの年齢', AGES)
+        breed_key = choose('犬種を選ぶ', BREEDS)
+        age = choose('迎えるときの年齢', AGES)
         @container.adopt_dog.call(Application::Commands::AdoptDogCommand.new(breed_key: breed_key, age_in_days: age))
       end
 
@@ -81,33 +81,38 @@ module Kennel
       end
 
       def feed(dog)
-        satiety, gulped = @prompt.select('どれくらい?', PORTIONS)
+        satiety, gulped = choose('どれくらい?', PORTIONS)
         run_use_case(:feed_dog, Application::Commands::FeedDogCommand.new(dog_id: dog.id, satiety: satiety, gulped: gulped),
                      "ごはんをあげた#{gulped ? '(早食い…)' : ''}")
       end
 
       def walk(dog)
-        minutes = @prompt.select('どれくらい歩く?', WALK_MINUTES)
+        minutes = choose('どれくらい歩く?', WALK_MINUTES)
         run_use_case(:walk_dog, Application::Commands::WalkDogCommand.new(dog_id: dog.id, minutes: minutes), "散歩 #{minutes}分")
       end
 
       def train(dog)
-        cue = @prompt.select('号令を選ぶ', CUES)
-        context = @prompt.select('どこで?', CONTEXTS)
+        cue = choose('号令を選ぶ', CUES)
+        context = choose('どこで?', CONTEXTS)
         run_use_case(:train_dog, Application::Commands::TrainDogCommand.new(dog_id: dog.id, cue: cue, context: context),
                      "しつけ: #{cue}")
       end
 
       def vaccinate(dog)
-        disease = @prompt.select('どのワクチン?', DISEASES)
+        disease = choose('どのワクチン?', DISEASES)
         run_use_case(:vaccinate_dog, Application::Commands::VaccinateDogCommand.new(dog_id: dog.id, disease: disease),
                      "ワクチン接種: #{disease}")
       end
 
       def advance(dog)
-        factor = @prompt.select('今日のごはんの量は?', RATIONS)
+        factor = choose('今日のごはんの量は?', RATIONS)
         intake = (dog.maintenance_energy_requirement * factor).round
         run_use_case(:live_a_day, Application::Commands::LiveADayCommand.new(dog_id: dog.id, intake_kcal: intake), '1日がすぎた')
+      end
+
+      # 選択肢が一画面に収まるよう、ページングせず全項目を表示する(per_page を項目数に合わせる)。
+      def choose(question, choices)
+        @prompt.select(question, choices, per_page: choices.size, cycle: true)
       end
 
       def run_use_case(name, command, note)
